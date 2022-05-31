@@ -9,12 +9,14 @@
 #include "topics.h"
 #include "headers.h"
 
+bool v = true;
 hw_timer_t *watchdogTimer = NULL;
 DHT dht(DHT_Pin, DHT_TYPE);
 IRsend irSend(IR_SEND_PIN);
 int mqttRetryAttempt = 0;
 boolean resetCondition = false;
 long lastMsg = 0;
+long lastMsg2 = 0;
 char msg[20];
 char touchmsg[20];
 int counter = 0;
@@ -63,15 +65,11 @@ void receivedCallback(char* topic, byte* payload, unsigned int length) {
   } 
 
   else if (strcmp(topic,R2_TOPIC)==0) {
-    if ((char)payload[0] == '1') {digitalWrite(r2, LOW);} else {digitalWrite(r2, HIGH);}
+    if ((char)payload[0] == '1') {digitalWrite(r2, HIGH);} else {digitalWrite(r2, LOW);}
   } 
 
   else if (strcmp(topic,R3_TOPIC)==0) {
-    if ((char)payload[0] == '1') {digitalWrite(r3, LOW);} else {digitalWrite(r3, HIGH);}
-  }
-
-  else if (strcmp(topic,WEATHER_TOPIC)==0) {
-    timerWrite(watchdogTimer, 0); //reset timer (feed watchdog)
+    if ((char)payload[0] == '1') {digitalWrite(r3, HIGH);} else {digitalWrite(r3, LOW);}
   }
 
   else if (strcmp(topic,TV_TOPIC_SONY) == 0) {
@@ -128,7 +126,7 @@ void connectToBroker() {
       client.subscribe(R2_TOPIC);
       client.subscribe(R3_TOPIC);
       client.subscribe(TV_TOPIC_SONY);
-      client.subscribe(WEATHER_TOPIC);
+      //client.subscribe(WEATHER_TOPIC);
     } 
     else {
       Serial.print(" failed, status code =");
@@ -165,9 +163,6 @@ void IRAM_ATTR interruptReboot() { //IRAM_ATTR because RAM is faster than flash
 void setup() {
   Serial.begin(115200);
 
-  /* Initialisation du 'watchdog' */
-  initializeWatchdogTimer();
-
   /* connexion au wifi */
   connectToWiFi();
 
@@ -175,10 +170,11 @@ void setup() {
   pinMode(r1, OUTPUT);
   pinMode(r2, OUTPUT);
   pinMode(r3, OUTPUT);
+  pinMode(button, INPUT);
   digitalWrite(r1, LOW);  //Or HIGH (Depends on relay)
   digitalWrite(r2, LOW);
   digitalWrite(r3, LOW);
-  
+  v = true;
   
   dht.begin(); //capteur de temperature
 
@@ -192,6 +188,17 @@ void loop() {
   }
   /* this function will listen for incomming subscribed topic-process-invoke receivedCallback */
   client.loop();
+  
+  if(digitalRead(button)){
+    long now2 = millis();
+    if(now2 - lastMsg2 > 5000){
+    lastMsg2 = now2;
+    Serial.println("Button pr");
+    const char* str = "Someone opened the door.";
+    client.publish(DOOR_TOPIC, str);
+    v = false;
+    }
+  }   
 
   /* we increase counter every 3 secs we count until 3 secs reached to avoid blocking program if using delay()*/
   long now = millis();
@@ -213,7 +220,7 @@ void loop() {
     // start 1-hour timer;
     lastMillis = millis();
     resetCondition = true;
-  }
+  } 
   
   if (resetCondition && (millis() - lastMillis >= 3600L * 1000))
   {
