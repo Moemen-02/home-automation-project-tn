@@ -3,13 +3,14 @@
 #include <ArduinoJson.h>
 #include <PubSubClient.h>
 #include <DHT.h>
+#include <SPI.h>
+#include <MFRC522.h>
 #include <IRremote.h>
 #include "auth.h"
 #include "GPIO_config.h"
 #include "topics.h"
 #include "headers.h"
 
-bool v = true;
 hw_timer_t *watchdogTimer = NULL;
 DHT dht(DHT_Pin, DHT_TYPE);
 IRsend irSend(IR_SEND_PIN);
@@ -17,6 +18,7 @@ int mqttRetryAttempt = 0;
 boolean resetCondition = false;
 long lastMsg = 0;
 long lastMsg2 = 0;
+long lastMsg3 = 0;
 char msg[20];
 char touchmsg[20];
 int counter = 0;
@@ -25,6 +27,7 @@ DynamicJsonBuffer  jsonBuffer(200);
 /* create an instance of WiFiClientSecure */
 WiFiClient esp32_WiFiClient;
 PubSubClient client(MQTT_SERVER, 1883, &receivedCallback, esp32_WiFiClient);
+MFRC522 mfrc522(SS_PIN, RST_PIN);
 
 void connectToWiFi(){
   Serial.print("Connecting to WiFi");
@@ -59,7 +62,12 @@ void receivedCallback(char* topic, byte* payload, unsigned int length) {
     Serial.print((char)payload[i]);
   }
   Serial.println("");
-
+ 
+  if (strcmp(topic,RFID_R_TOPIC)==0) {
+    if ((char)payload[0] == '1') {Serial.println("\nAccess granted.\n");} 
+    else {Serial.println("Access denied.\n");}
+  } 
+  
   if (strcmp(topic,R1_TOPIC)==0) {
     if ((char)payload[0] == '1') {digitalWrite(r1, HIGH);} else {digitalWrite(r1, LOW);}
   } 
@@ -126,6 +134,7 @@ void connectToBroker() {
       client.subscribe(R2_TOPIC);
       client.subscribe(R3_TOPIC);
       client.subscribe(TV_TOPIC_SONY);
+      client.subscribe(RFID_R_TOPIC);
       //client.subscribe(WEATHER_TOPIC);
     } 
     else {
@@ -160,6 +169,34 @@ void IRAM_ATTR interruptReboot() { //IRAM_ATTR because RAM is faster than flash
   ESP.restart();
 }
 
+void RFID_verification(){
+  // Look for new cards
+  if ( ! mfrc522.PICC_IsNewCardPresent()) {return;}
+  // Select one of the cards
+  if ( ! mfrc522.PICC_ReadCardSerial()) {return;}
+  long now3 = millis();
+  if(now3 - lastMsg3 > 5000){
+  lastMsg3 = now3;
+  //Show UID on serial monitor
+  Serial.print("UID tag :");
+  String content= "";
+  byte letter;
+  for (byte i = 0; i < mfrc522.uid.size; i++) 
+  {
+     Serial.print(mfrc522.uid.uidByte[i] < 0x10 ? " 0" : " ");
+     Serial.print(mfrc522.uid.uidByte[i], HEX);
+     content.concat(String(mfrc522.uid.uidByte[i] < 0x10 ? " 0" : " "));
+     content.concat(String(mfrc522.uid.uidByte[i], HEX));
+  }
+  Serial.println();
+  char contento[90];
+  content.toUpperCase();
+  content = "{\"uid\":" + String("\"") + content.substring(1) + String("\"") + "}";
+  content.toCharArray(contento, (content.length() + 1));
+  client.publish(RFID_TOPIC, contento, false); //0C 90 43 4A 
+  }
+}
+
 void setup() {
   Serial.begin(115200);
 
@@ -174,10 +211,10 @@ void setup() {
   digitalWrite(r1, LOW);  //Or HIGH (Depends on relay)
   digitalWrite(r2, LOW);
   digitalWrite(r3, LOW);
-  v = true;
   
   dht.begin(); //capteur de temperature
-
+  SPI.begin();      // Initiate  SPI bus
+  mfrc522.PCD_Init();   // Initiate MFRC522
   Serial.println("Everything Setup");
 }
 
@@ -188,6 +225,8 @@ void loop() {
   }
   /* this function will listen for incomming subscribed topic-process-invoke receivedCallback */
   client.loop();
+
+  RFID_verification();
   
   if(digitalRead(button)){
     long now2 = millis();
@@ -196,7 +235,6 @@ void loop() {
     Serial.println("Button pr");
     const char* str = "Someone opened the door.";
     client.publish(DOOR_TOPIC, str);
-    v = false;
     }
   }   
 
