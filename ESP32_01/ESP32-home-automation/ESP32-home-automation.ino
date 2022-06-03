@@ -19,6 +19,7 @@ boolean resetCondition = false;
 long lastMsg = 0;
 long lastMsg2 = 0;
 long lastMsg3 = 0;
+long lastMsg4 = 0;
 char msg[20];
 char touchmsg[20];
 int counter = 0;
@@ -169,13 +170,13 @@ void IRAM_ATTR interruptReboot() { //IRAM_ATTR because RAM is faster than flash
   ESP.restart();
 }
 
-void RFID_verification(){
+void RFID_pub(){
   // Look for new cards
   if ( ! mfrc522.PICC_IsNewCardPresent()) {return;}
   // Select one of the cards
   if ( ! mfrc522.PICC_ReadCardSerial()) {return;}
   long now3 = millis();
-  if(now3 - lastMsg3 > 5000){
+  if(now3 - lastMsg3 > 2000){
   lastMsg3 = now3;
   //Show UID on serial monitor
   Serial.print("UID tag :");
@@ -193,7 +194,31 @@ void RFID_verification(){
   content.toUpperCase();
   content = "{\"uid\":" + String("\"") + content.substring(1) + String("\"") + "}";
   content.toCharArray(contento, (content.length() + 1));
-  client.publish(RFID_TOPIC, contento, false); //0C 90 43 4A 
+  client.publish(RFID_TOPIC, contento, false); // 0C 90 43 4A 
+  }
+}
+
+void button1_pub(){
+  if(digitalRead(button1)){
+    long now2 = millis();
+    if(now2 - lastMsg2 > 5000){
+    lastMsg2 = now2;
+    Serial.println("Button1 pr");
+    const char* isOpen_door = "1";
+    client.publish(DOOR_TOPIC, isOpen_door);
+    }
+  }
+}
+
+void button2_pub(){
+  if(digitalRead(button2)){
+    long now4 = millis();
+    if(now4 - lastMsg4 > 5000){
+    lastMsg4 = now4;
+    Serial.println("Button2 pr");
+    const char* str = "Your house is on fire!";
+    client.publish(FIRE_TOPIC, str);
+    }
   }
 }
 
@@ -207,7 +232,8 @@ void setup() {
   pinMode(r1, OUTPUT);
   pinMode(r2, OUTPUT);
   pinMode(r3, OUTPUT);
-  pinMode(button, INPUT);
+  pinMode(button1, INPUT);
+  pinMode(button2, INPUT);
   digitalWrite(r1, LOW);  //Or HIGH (Depends on relay)
   digitalWrite(r2, LOW);
   digitalWrite(r3, LOW);
@@ -226,17 +252,10 @@ void loop() {
   /* this function will listen for incomming subscribed topic-process-invoke receivedCallback */
   client.loop();
 
-  RFID_verification();
+  RFID_pub();
   
-  if(digitalRead(button)){
-    long now2 = millis();
-    if(now2 - lastMsg2 > 5000){
-    lastMsg2 = now2;
-    Serial.println("Button pr");
-    const char* str = "Someone opened the door.";
-    client.publish(DOOR_TOPIC, str);
-    }
-  }   
+  button1_pub();
+  button2_pub();   
 
   /* we increase counter every 3 secs we count until 3 secs reached to avoid blocking program if using delay()*/
   long now = millis();
