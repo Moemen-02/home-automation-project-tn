@@ -7,6 +7,6 @@ const char* R3_TOPIC = "r1/r3";
 const char* TV_TOPIC_SONY = "r1/sony/code";
 const char* RFID_R_TOPIC = "rfid/results";
 const char* FIRE_TOPIC = "fire";
-
+const char* WIFI_TOPIC = "wifi";
 const char* DOOR_TOPIC = "door";
 const char* RFID_TOPIC = "rfid";

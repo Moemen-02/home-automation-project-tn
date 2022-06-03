@@ -20,6 +20,7 @@ long lastMsg = 0;
 long lastMsg2 = 0;
 long lastMsg3 = 0;
 long lastMsg4 = 0;
+long lastMsg5 = 0;
 char msg[20];
 char touchmsg[20];
 int counter = 0;
@@ -162,7 +163,7 @@ void initializeWatchdogTimer(){
 
 void reboot(){
   Serial.println("...Rebooting...");
-  //ESP.restart();
+  ESP.restart();
 }
 
 void IRAM_ATTR interruptReboot() { //IRAM_ATTR because RAM is faster than flash
@@ -222,6 +223,17 @@ void button2_pub(){
   }
 }
 
+void wifiCheck_pub(){
+  if(WiFi.status() == WL_CONNECTED){
+    long now5 = millis();
+    if(now5 - lastMsg5 > 3000){
+    lastMsg5 = now5;
+    const char* str = "1";
+    client.publish(WIFI_TOPIC, str);
+    }
+  } 
+}
+
 void setup() {
   Serial.begin(115200);
 
@@ -245,6 +257,8 @@ void setup() {
 }
 
 void loop() {
+  wifiCheck_pub();
+  
   /* if client was disconnected then try to reconnect again */
   if (!client.connected()) {
     connectToBroker();
