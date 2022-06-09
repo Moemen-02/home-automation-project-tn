@@ -1,0 +1,1839 @@
+[
+    {
+        "id": "10e38d15.571223",
+        "type": "tab",
+        "label": "Flow 1",
+        "disabled": false,
+        "info": ""
+    },
+    {
+        "id": "e71042cc.1c88",
+        "type": "mqtt in",
+        "z": "10e38d15.571223",
+        "name": "Weather",
+        "topic": "r1/weather",
+        "qos": "0",
+        "datatype": "auto",
+        "broker": "76d2bac1.91bed4",
+        "nl": false,
+        "rap": false,
+        "inputs": 0,
+        "x": 80,
+        "y": 40,
+        "wires": [
+            [
+                "5545e1a1.16279"
+            ]
+        ]
+    },
+    {
+        "id": "5545e1a1.16279",
+        "type": "json",
+        "z": "10e38d15.571223",
+        "name": "Format Weather",
+        "property": "payload",
+        "action": "obj",
+        "pretty": true,
+        "x": 280,
+        "y": 40,
+        "wires": [
+            [
+                "8251d3aa.c3905",
+                "ad990cf5.98919"
+            ]
+        ]
+    },
+    {
+        "id": "8251d3aa.c3905",
+        "type": "ui_gauge",
+        "z": "10e38d15.571223",
+        "name": "Temperature",
+        "group": "21db450c.66332a",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "gtype": "gage",
+        "title": "Temperature",
+        "label": "°C",
+        "format": "{{msg.payload.temperature}}",
+        "min": "10",
+        "max": "50",
+        "colors": [
+            "#005aff",
+            "#f4ff5c",
+            "#ca3838"
+        ],
+        "seg1": "20",
+        "seg2": "30",
+        "className": "",
+        "x": 510,
+        "y": 20,
+        "wires": []
+    },
+    {
+        "id": "ad990cf5.98919",
+        "type": "ui_gauge",
+        "z": "10e38d15.571223",
+        "name": "",
+        "group": "48330498.8d0d8c",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "gtype": "gage",
+        "title": "Humidity",
+        "label": "%",
+        "format": "{{msg.payload.humidity}}",
+        "min": 0,
+        "max": "100",
+        "colors": [
+            "#00b500",
+            "#e6e600",
+            "#ca3838"
+        ],
+        "seg1": "",
+        "seg2": "",
+        "className": "",
+        "x": 500,
+        "y": 60,
+        "wires": []
+    },
+    {
+        "id": "d55cbad.06cb448",
+        "type": "mqtt out",
+        "z": "10e38d15.571223",
+        "name": "TV Code",
+        "topic": "r1/sony/code",
+        "qos": "0",
+        "retain": "",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "afdfbe80.4e29f",
+        "x": 1580,
+        "y": 260,
+        "wires": []
+    },
+    {
+        "id": "fe28ee52.1c398",
+        "type": "function",
+        "z": "10e38d15.571223",
+        "name": "Parse Buttons",
+        "func": "if (msg.payload === \"power\") {\n    msg.payload = '{\"code1\": \"a90\"}';\n} else if (msg.payload === \"vup\") {\n    msg.payload = '{\"code1\": \"490\"}';\n} else if (msg.payload === \"vdn\") {\n    msg.payload = '{\"code1\": \"C90\"}';\n} else if (msg.payload === \"cup\") {\n    msg.payload = '{\"code1\": \"90\"}';\n} else if (msg.payload === \"cdn\") {\n    msg.payload = '{\"code1\": \"890\"}';\n} else if (msg.payload === \"1\") {\n    msg.payload = '{\"code1\": \"10\"}';\n} else if (msg.payload === \"2\") {\n    msg.payload = '{\"code1\": \"810\"}';\n} else if (msg.payload === \"3\") {\n    msg.payload = '{\"code1\": \"410\"}';\n} else if (msg.payload === \"4\") {\n    msg.payload = '{\"code1\": \"C10\"}';\n} else if (msg.payload === \"5\") {\n    msg.payload = '{\"code1\": \"210\"}';\n} else if (msg.payload === \"6\") {\n    msg.payload = '{\"code1\": \"A10\"}';\n} else if (msg.payload === \"7\") {\n    msg.payload = '{\"code1\": \"610\"}';\n} else if (msg.payload === \"8\") {\n    msg.payload = '{\"code1\": \"E10\"}';\n} else if (msg.payload === \"9\") {\n    msg.payload = '{\"code1\": \"110\"}';\n} else if (msg.payload === \"0\") {\n    msg.payload = '{\"code1\": \"910\"}';\n} else if (msg.payload === \"mute\") {\n    msg.payload = '{\"code1\": \"290\"}';\n} else if (msg.payload === \"__\") {\n    msg.payload = '{\"code1\": \"b90\"}';\n} else {msg.payload = '{\"message\": \"Unknown Code\"}'}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1340,
+        "y": 300,
+        "wires": [
+            [
+                "d55cbad.06cb448"
+            ]
+        ]
+    },
+    {
+        "id": "2a82217f.9ede4e",
+        "type": "ui_button",
+        "z": "10e38d15.571223",
+        "name": "Power",
+        "group": "aefc6f04.70404",
+        "order": 1,
+        "width": 2,
+        "height": 2,
+        "passthru": false,
+        "label": "",
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "",
+        "className": "",
+        "icon": "power_settings_new",
+        "payload": "power",
+        "payloadType": "str",
+        "topic": "",
+        "topicType": "str",
+        "x": 1110,
+        "y": 20,
+        "wires": [
+            [
+                "fe28ee52.1c398"
+            ]
+        ]
+    },
+    {
+        "id": "473dc210.33981c",
+        "type": "ui_button",
+        "z": "10e38d15.571223",
+        "name": "Mute",
+        "group": "aefc6f04.70404",
+        "order": 4,
+        "width": 2,
+        "height": 2,
+        "passthru": false,
+        "label": "",
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "",
+        "className": "",
+        "icon": "volume_mute",
+        "payload": "mute",
+        "payloadType": "str",
+        "topic": "/r1/tv/code",
+        "topicType": "str",
+        "x": 1110,
+        "y": 60,
+        "wires": [
+            [
+                "fe28ee52.1c398"
+            ]
+        ]
+    },
+    {
+        "id": "2d888be1.b68004",
+        "type": "ui_button",
+        "z": "10e38d15.571223",
+        "name": "Channel Up",
+        "group": "aefc6f04.70404",
+        "order": 2,
+        "width": 2,
+        "height": 2,
+        "passthru": false,
+        "label": "",
+        "color": "",
+        "bgcolor": "",
+        "icon": "keyboard_arrow_up",
+        "payload": "cup",
+        "payloadType": "str",
+        "topic": "",
+        "x": 1090,
+        "y": 100,
+        "wires": [
+            [
+                "fe28ee52.1c398"
+            ]
+        ]
+    },
+    {
+        "id": "7ef7f2ea.ef794c",
+        "type": "ui_button",
+        "z": "10e38d15.571223",
+        "name": "Volume Up",
+        "group": "aefc6f04.70404",
+        "order": 3,
+        "width": 2,
+        "height": 2,
+        "passthru": false,
+        "label": "",
+        "color": "",
+        "bgcolor": "",
+        "icon": "volume_up",
+        "payload": "vup",
+        "payloadType": "str",
+        "topic": "",
+        "x": 1090,
+        "y": 140,
+        "wires": [
+            [
+                "fe28ee52.1c398"
+            ]
+        ]
+    },
+    {
+        "id": "c03450dd.ad747",
+        "type": "ui_button",
+        "z": "10e38d15.571223",
+        "name": "Channel Down",
+        "group": "aefc6f04.70404",
+        "order": 5,
+        "width": 2,
+        "height": 2,
+        "passthru": false,
+        "label": "",
+        "color": "",
+        "bgcolor": "",
+        "icon": "keyboard_arrow_down",
+        "payload": "cdn",
+        "payloadType": "str",
+        "topic": "",
+        "x": 1080,
+        "y": 180,
+        "wires": [
+            [
+                "fe28ee52.1c398"
+            ]
+        ]
+    },
+    {
+        "id": "9ff2804d.ae44c",
+        "type": "ui_button",
+        "z": "10e38d15.571223",
+        "name": "Volume Down",
+        "group": "aefc6f04.70404",
+        "order": 6,
+        "width": 2,
+        "height": 2,
+        "passthru": false,
+        "label": "",
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "",
+        "className": "",
+        "icon": "volume_down",
+        "payload": "vdn",
+        "payloadType": "str",
+        "topic": "",
+        "topicType": "str",
+        "x": 1080,
+        "y": 220,
+        "wires": [
+            [
+                "fe28ee52.1c398"
+            ]
+        ]
+    },
+    {
+        "id": "b2e18754.90d558",
+        "type": "ui_button",
+        "z": "10e38d15.571223",
+        "name": "1",
+        "group": "aefc6f04.70404",
+        "order": 7,
+        "width": 2,
+        "height": 2,
+        "passthru": false,
+        "label": "1",
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "",
+        "className": "",
+        "icon": "",
+        "payload": "1",
+        "payloadType": "str",
+        "topic": "",
+        "topicType": "str",
+        "x": 1110,
+        "y": 260,
+        "wires": [
+            [
+                "fe28ee52.1c398"
+            ]
+        ]
+    },
+    {
+        "id": "b69f516f.fc497",
+        "type": "ui_button",
+        "z": "10e38d15.571223",
+        "name": "2",
+        "group": "aefc6f04.70404",
+        "order": 8,
+        "width": 2,
+        "height": 2,
+        "passthru": false,
+        "label": "2",
+        "color": "",
+        "bgcolor": "",
+        "icon": "",
+        "payload": "2",
+        "payloadType": "str",
+        "topic": "",
+        "x": 1110,
+        "y": 300,
+        "wires": [
+            [
+                "fe28ee52.1c398"
+            ]
+        ]
+    },
+    {
+        "id": "f842222a.ad5a3",
+        "type": "ui_button",
+        "z": "10e38d15.571223",
+        "name": "3",
+        "group": "aefc6f04.70404",
+        "order": 9,
+        "width": 2,
+        "height": 2,
+        "passthru": false,
+        "label": "3",
+        "color": "",
+        "bgcolor": "",
+        "icon": "",
+        "payload": "3",
+        "payloadType": "str",
+        "topic": "",
+        "x": 1110,
+        "y": 340,
+        "wires": [
+            [
+                "fe28ee52.1c398"
+            ]
+        ]
+    },
+    {
+        "id": "7959796d.c52a48",
+        "type": "ui_button",
+        "z": "10e38d15.571223",
+        "name": "4",
+        "group": "aefc6f04.70404",
+        "order": 10,
+        "width": 2,
+        "height": 2,
+        "passthru": false,
+        "label": "4",
+        "color": "",
+        "bgcolor": "",
+        "icon": "",
+        "payload": "4",
+        "payloadType": "str",
+        "topic": "",
+        "x": 1110,
+        "y": 380,
+        "wires": [
+            [
+                "fe28ee52.1c398"
+            ]
+        ]
+    },
+    {
+        "id": "6f756615.a24d58",
+        "type": "ui_button",
+        "z": "10e38d15.571223",
+        "name": "5",
+        "group": "aefc6f04.70404",
+        "order": 11,
+        "width": 2,
+        "height": 2,
+        "passthru": false,
+        "label": "5",
+        "color": "",
+        "bgcolor": "",
+        "icon": "",
+        "payload": "5",
+        "payloadType": "str",
+        "topic": "",
+        "x": 1110,
+        "y": 420,
+        "wires": [
+            [
+                "fe28ee52.1c398"
+            ]
+        ]
+    },
+    {
+        "id": "ec828e08.03e37",
+        "type": "ui_button",
+        "z": "10e38d15.571223",
+        "name": "6",
+        "group": "aefc6f04.70404",
+        "order": 12,
+        "width": 2,
+        "height": 2,
+        "passthru": false,
+        "label": "6",
+        "color": "",
+        "bgcolor": "",
+        "icon": "",
+        "payload": "6",
+        "payloadType": "str",
+        "topic": "",
+        "x": 1110,
+        "y": 460,
+        "wires": [
+            [
+                "fe28ee52.1c398"
+            ]
+        ]
+    },
+    {
+        "id": "e5a258e4.e21358",
+        "type": "ui_button",
+        "z": "10e38d15.571223",
+        "name": "7",
+        "group": "aefc6f04.70404",
+        "order": 13,
+        "width": 2,
+        "height": 2,
+        "passthru": false,
+        "label": "7",
+        "color": "",
+        "bgcolor": "",
+        "icon": "",
+        "payload": "7",
+        "payloadType": "str",
+        "topic": "",
+        "x": 1110,
+        "y": 500,
+        "wires": [
+            [
+                "fe28ee52.1c398"
+            ]
+        ]
+    },
+    {
+        "id": "ea724bea.462728",
+        "type": "ui_button",
+        "z": "10e38d15.571223",
+        "name": "8",
+        "group": "aefc6f04.70404",
+        "order": 14,
+        "width": 2,
+        "height": 2,
+        "passthru": false,
+        "label": "8",
+        "color": "",
+        "bgcolor": "",
+        "icon": "",
+        "payload": "8",
+        "payloadType": "str",
+        "topic": "",
+        "x": 1110,
+        "y": 540,
+        "wires": [
+            [
+                "fe28ee52.1c398"
+            ]
+        ]
+    },
+    {
+        "id": "e3956fbc.ec9d1",
+        "type": "ui_button",
+        "z": "10e38d15.571223",
+        "name": "9",
+        "group": "aefc6f04.70404",
+        "order": 15,
+        "width": 2,
+        "height": 2,
+        "passthru": false,
+        "label": "9",
+        "color": "",
+        "bgcolor": "",
+        "icon": "",
+        "payload": "9",
+        "payloadType": "str",
+        "topic": "",
+        "x": 1110,
+        "y": 580,
+        "wires": [
+            [
+                "fe28ee52.1c398"
+            ]
+        ]
+    },
+    {
+        "id": "30a3ff.2ab1cc02",
+        "type": "ui_button",
+        "z": "10e38d15.571223",
+        "name": "__",
+        "group": "aefc6f04.70404",
+        "order": 16,
+        "width": 2,
+        "height": 2,
+        "passthru": false,
+        "label": "__",
+        "color": "",
+        "bgcolor": "",
+        "icon": "",
+        "payload": "__",
+        "payloadType": "str",
+        "topic": "",
+        "x": 1110,
+        "y": 620,
+        "wires": [
+            [
+                "fe28ee52.1c398"
+            ]
+        ]
+    },
+    {
+        "id": "2abf3fd5.e4e2d",
+        "type": "ui_button",
+        "z": "10e38d15.571223",
+        "name": "0",
+        "group": "aefc6f04.70404",
+        "order": 17,
+        "width": 2,
+        "height": 2,
+        "passthru": false,
+        "label": "0",
+        "color": "",
+        "bgcolor": "",
+        "icon": "",
+        "payload": "0",
+        "payloadType": "str",
+        "topic": "",
+        "x": 1110,
+        "y": 660,
+        "wires": [
+            [
+                "fe28ee52.1c398"
+            ]
+        ]
+    },
+    {
+        "id": "d731d766.c640b8",
+        "type": "ui_button",
+        "z": "10e38d15.571223",
+        "name": "",
+        "group": "8a21836f.059d",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "passthru": false,
+        "label": "Fox movies",
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "",
+        "className": "",
+        "icon": "",
+        "payload": "{\"code1\": \"b90\",\"code2\": \"10\",\"code3\":\"e10\"}",
+        "payloadType": "str",
+        "topic": "",
+        "topicType": "str",
+        "x": 1330,
+        "y": 180,
+        "wires": [
+            [
+                "d55cbad.06cb448"
+            ]
+        ]
+    },
+    {
+        "id": "2f2a6ddd.2abe52",
+        "type": "ui_button",
+        "z": "10e38d15.571223",
+        "name": "",
+        "group": "8a21836f.059d",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "passthru": false,
+        "label": "Wataniya 2",
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "",
+        "className": "",
+        "icon": "",
+        "payload": "{\"code1\": \"b90\",\"code2\": \"810\",\"code3\":\"910\"}",
+        "payloadType": "str",
+        "topic": "",
+        "topicType": "str",
+        "x": 1330,
+        "y": 220,
+        "wires": [
+            [
+                "d55cbad.06cb448"
+            ]
+        ]
+    },
+    {
+        "id": "b1569889.0dacb8",
+        "type": "ui_button",
+        "z": "10e38d15.571223",
+        "name": "",
+        "group": "8a21836f.059d",
+        "order": 3,
+        "width": 0,
+        "height": 0,
+        "passthru": false,
+        "label": "National geographic",
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "",
+        "className": "",
+        "icon": "",
+        "payload": "{\"code1\": \"b90\",\"code2\": \"810\",\"code3\":\"10\"}",
+        "payloadType": "str",
+        "topic": "",
+        "topicType": "str",
+        "x": 1360,
+        "y": 260,
+        "wires": [
+            [
+                "d55cbad.06cb448"
+            ]
+        ]
+    },
+    {
+        "id": "64502be.7a3ccd4",
+        "type": "mqtt out",
+        "z": "10e38d15.571223",
+        "name": "R2 Pub",
+        "topic": "r1/r2",
+        "qos": "",
+        "retain": "true",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "afdfbe80.4e29f",
+        "x": 560,
+        "y": 760,
+        "wires": []
+    },
+    {
+        "id": "2aaec718.b40d88",
+        "type": "ui_switch",
+        "z": "10e38d15.571223",
+        "name": "",
+        "label": "Green LED",
+        "tooltip": "",
+        "group": "4b297045.1792d",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "passthru": true,
+        "decouple": "false",
+        "topic": "",
+        "topicType": "str",
+        "style": "",
+        "onvalue": "1",
+        "onvalueType": "num",
+        "onicon": "",
+        "oncolor": "",
+        "offvalue": "0",
+        "offvalueType": "num",
+        "officon": "",
+        "offcolor": "",
+        "animate": true,
+        "className": "",
+        "x": 90,
+        "y": 760,
+        "wires": [
+            [
+                "64502be.7a3ccd4"
+            ]
+        ]
+    },
+    {
+        "id": "4d27aa77.5ecc94",
+        "type": "mqtt out",
+        "z": "10e38d15.571223",
+        "name": "R1 Pub",
+        "topic": "r1/r1",
+        "qos": "",
+        "retain": "false",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "afdfbe80.4e29f",
+        "x": 560,
+        "y": 700,
+        "wires": []
+    },
+    {
+        "id": "5ac62894.dabe88",
+        "type": "ui_switch",
+        "z": "10e38d15.571223",
+        "name": "",
+        "label": "Yellow LED",
+        "tooltip": "",
+        "group": "4b297045.1792d",
+        "order": 3,
+        "width": 0,
+        "height": 0,
+        "passthru": true,
+        "decouple": "false",
+        "topic": "",
+        "topicType": "str",
+        "style": "",
+        "onvalue": "1",
+        "onvalueType": "str",
+        "onicon": "",
+        "oncolor": "",
+        "offvalue": "0",
+        "offvalueType": "str",
+        "officon": "",
+        "offcolor": "",
+        "animate": true,
+        "className": "",
+        "x": 90,
+        "y": 700,
+        "wires": [
+            [
+                "4d27aa77.5ecc94"
+            ]
+        ]
+    },
+    {
+        "id": "3ba0746e.aab84c",
+        "type": "mqtt out",
+        "z": "10e38d15.571223",
+        "name": "R3 Pub",
+        "topic": "r1/r3",
+        "qos": "",
+        "retain": "true",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "afdfbe80.4e29f",
+        "x": 560,
+        "y": 820,
+        "wires": []
+    },
+    {
+        "id": "eb87ad02.7c507",
+        "type": "ui_switch",
+        "z": "10e38d15.571223",
+        "name": "",
+        "label": "Red LED",
+        "tooltip": "",
+        "group": "4b297045.1792d",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "passthru": true,
+        "decouple": "false",
+        "topic": "",
+        "topicType": "str",
+        "style": "",
+        "onvalue": "1",
+        "onvalueType": "num",
+        "onicon": "",
+        "oncolor": "",
+        "offvalue": "0",
+        "offvalueType": "num",
+        "officon": "",
+        "offcolor": "",
+        "animate": false,
+        "className": "",
+        "x": 80,
+        "y": 820,
+        "wires": [
+            [
+                "3ba0746e.aab84c"
+            ]
+        ]
+    },
+    {
+        "id": "c61d6737146d4f3b",
+        "type": "e-mail",
+        "z": "10e38d15.571223",
+        "server": "smtp.gmail.com",
+        "port": "465",
+        "secure": true,
+        "tls": true,
+        "name": "b8moemen@gmail.com",
+        "dname": "",
+        "x": 650,
+        "y": 520,
+        "wires": []
+    },
+    {
+        "id": "ba7bee6364808693",
+        "type": "mqtt in",
+        "z": "10e38d15.571223",
+        "name": "",
+        "topic": "door",
+        "qos": "0",
+        "datatype": "auto",
+        "broker": "76d2bac1.91bed4",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 70,
+        "y": 520,
+        "wires": [
+            [
+                "7ab3c9a7b293d232"
+            ]
+        ]
+    },
+    {
+        "id": "d6c8a2a48681df9e",
+        "type": "mqtt in",
+        "z": "10e38d15.571223",
+        "name": "",
+        "topic": "rfid",
+        "qos": "0",
+        "datatype": "auto",
+        "broker": "76d2bac1.91bed4",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 70,
+        "y": 180,
+        "wires": [
+            [
+                "1e19c4118c3e88e4"
+            ]
+        ]
+    },
+    {
+        "id": "f6898e583c4da527",
+        "type": "function",
+        "z": "10e38d15.571223",
+        "name": "RFID verification",
+        "func": "if(msg.payload.uid === \"0C 90 43 4A\"){\n    msg.payload = 1;\n}\nelse {\n    msg.payload = 0;\n}\n    \nreturn msg",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 400,
+        "y": 180,
+        "wires": [
+            [
+                "bbe8e392f94785c2",
+                "f306de2fc0e95878",
+                "84b1c9e6bb69cc0c"
+            ]
+        ]
+    },
+    {
+        "id": "1e19c4118c3e88e4",
+        "type": "json",
+        "z": "10e38d15.571223",
+        "name": "Format RFID",
+        "property": "payload",
+        "action": "obj",
+        "pretty": false,
+        "x": 230,
+        "y": 180,
+        "wires": [
+            [
+                "f6898e583c4da527"
+            ]
+        ]
+    },
+    {
+        "id": "84b1c9e6bb69cc0c",
+        "type": "mqtt out",
+        "z": "10e38d15.571223",
+        "name": "RFID verified",
+        "topic": "rfid/results",
+        "qos": "0",
+        "retain": "",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "76d2bac1.91bed4",
+        "x": 650,
+        "y": 120,
+        "wires": []
+    },
+    {
+        "id": "bbe8e392f94785c2",
+        "type": "function",
+        "z": "10e38d15.571223",
+        "name": "Format text",
+        "func": "msg.topic = \"\";\nif(msg.payload === 1) \n{\n    msg.payload = \"Access granted\";\n    global.set(\"vLock\", false);\n}\nelse if(msg.payload === 0)\n{\n    msg.payload = \"Access denied\";\n}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 650,
+        "y": 180,
+        "wires": [
+            [
+                "2e138ee3b77f7af0",
+                "15c8290e9a77315e"
+            ]
+        ]
+    },
+    {
+        "id": "2e138ee3b77f7af0",
+        "type": "ui_toast",
+        "z": "10e38d15.571223",
+        "position": "dialog",
+        "displayTime": "3",
+        "highlight": "",
+        "sendall": true,
+        "outputs": 1,
+        "ok": "OK",
+        "cancel": "",
+        "raw": false,
+        "className": "",
+        "topic": "",
+        "name": "Notification",
+        "x": 850,
+        "y": 200,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "f16a2879d99108fb",
+        "type": "e-mail",
+        "z": "10e38d15.571223",
+        "server": "smtp.gmail.com",
+        "port": "465",
+        "secure": true,
+        "tls": true,
+        "name": "b8moemen@gmail.com",
+        "dname": "",
+        "x": 610,
+        "y": 620,
+        "wires": []
+    },
+    {
+        "id": "fcb07d97a9a653bb",
+        "type": "mqtt in",
+        "z": "10e38d15.571223",
+        "name": "",
+        "topic": "fire",
+        "qos": "0",
+        "datatype": "auto",
+        "broker": "76d2bac1.91bed4",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 70,
+        "y": 620,
+        "wires": [
+            [
+                "bcc631fcbe71d607",
+                "f3b95d018aca09c8"
+            ]
+        ]
+    },
+    {
+        "id": "36121df564e5c4b1",
+        "type": "function",
+        "z": "10e38d15.571223",
+        "name": "vLock ON",
+        "func": "global.set(\"vLock\", true);\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 320,
+        "y": 440,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "7ab3c9a7b293d232",
+        "type": "function",
+        "z": "10e38d15.571223",
+        "name": "",
+        "func": "if (global.get(\"vLock\") === true) return msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 220,
+        "y": 520,
+        "wires": [
+            [
+                "bd9b5eadb1dfb82a"
+            ]
+        ]
+    },
+    {
+        "id": "f306de2fc0e95878",
+        "type": "function",
+        "z": "10e38d15.571223",
+        "name": "vLock OFF",
+        "func": "if(msg.payload === 1) \n{\n    global.set(\"vLock\", false);\n}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 650,
+        "y": 240,
+        "wires": [
+            [
+                "a8dafbd97a053242"
+            ]
+        ]
+    },
+    {
+        "id": "af0f96ab19ebeae6",
+        "type": "ui_button",
+        "z": "10e38d15.571223",
+        "name": "vLock",
+        "group": "8344a6c2611f5694",
+        "order": 1,
+        "width": "6",
+        "height": 3,
+        "passthru": false,
+        "label": "Lock door",
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "red",
+        "className": "",
+        "icon": "lock",
+        "payload": "true",
+        "payloadType": "bool",
+        "topic": "topic",
+        "topicType": "msg",
+        "x": 130,
+        "y": 400,
+        "wires": [
+            [
+                "36121df564e5c4b1",
+                "18826ebe7423f90c"
+            ]
+        ]
+    },
+    {
+        "id": "b933cb143440bb8a",
+        "type": "ui_toast",
+        "z": "10e38d15.571223",
+        "position": "top right",
+        "displayTime": "3",
+        "highlight": "red",
+        "sendall": true,
+        "outputs": 0,
+        "ok": "OK",
+        "cancel": "",
+        "raw": false,
+        "className": "",
+        "topic": "",
+        "name": "door lock notification",
+        "x": 640,
+        "y": 440,
+        "wires": []
+    },
+    {
+        "id": "18826ebe7423f90c",
+        "type": "change",
+        "z": "10e38d15.571223",
+        "name": "door_notif_format",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "door locked",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 350,
+        "y": 400,
+        "wires": [
+            [
+                "b933cb143440bb8a",
+                "7d7be87aec53fe8f",
+                "1e0cd1734c0985e5"
+            ]
+        ]
+    },
+    {
+        "id": "d6aa2bd789a5e074",
+        "type": "ui_toast",
+        "z": "10e38d15.571223",
+        "position": "top right",
+        "displayTime": "3",
+        "highlight": "green",
+        "sendall": true,
+        "outputs": 0,
+        "ok": "OK",
+        "cancel": "",
+        "raw": false,
+        "className": "",
+        "topic": "",
+        "name": "door lock notification",
+        "x": 640,
+        "y": 320,
+        "wires": []
+    },
+    {
+        "id": "73f684e586f51f29",
+        "type": "switch",
+        "z": "10e38d15.571223",
+        "name": "",
+        "property": "payload",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "1",
+                "vt": "num"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 1,
+        "x": 130,
+        "y": 360,
+        "wires": [
+            [
+                "bc0eda8315c7fc93"
+            ]
+        ]
+    },
+    {
+        "id": "bc0eda8315c7fc93",
+        "type": "change",
+        "z": "10e38d15.571223",
+        "name": "door_unlock_notif_format",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "door unlocked",
+                "tot": "str"
+            },
+            {
+                "t": "set",
+                "p": "topic",
+                "pt": "msg",
+                "to": "",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 330,
+        "y": 360,
+        "wires": [
+            [
+                "d6aa2bd789a5e074",
+                "7d7be87aec53fe8f",
+                "1e0cd1734c0985e5"
+            ]
+        ]
+    },
+    {
+        "id": "bd9b5eadb1dfb82a",
+        "type": "change",
+        "z": "10e38d15.571223",
+        "name": "door_mail_format",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "",
+                "tot": "str"
+            },
+            {
+                "t": "set",
+                "p": "topic",
+                "pt": "msg",
+                "to": "Someone opened your door (If it was you ignore this message)",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 390,
+        "y": 520,
+        "wires": [
+            [
+                "c61d6737146d4f3b"
+            ]
+        ]
+    },
+    {
+        "id": "7d7be87aec53fe8f",
+        "type": "ui_text",
+        "z": "10e38d15.571223",
+        "group": "8344a6c2611f5694",
+        "order": 5,
+        "width": "6",
+        "height": 2,
+        "name": "",
+        "label": "Lock state",
+        "format": "{{msg.payload}}",
+        "layout": "col-center",
+        "className": "",
+        "x": 610,
+        "y": 400,
+        "wires": []
+    },
+    {
+        "id": "bcc631fcbe71d607",
+        "type": "change",
+        "z": "10e38d15.571223",
+        "name": "fire_mail_format",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "",
+                "tot": "str"
+            },
+            {
+                "t": "set",
+                "p": "topic",
+                "pt": "msg",
+                "to": "Your house is on fire!!",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 340,
+        "y": 620,
+        "wires": [
+            [
+                "f16a2879d99108fb"
+            ]
+        ]
+    },
+    {
+        "id": "f3b95d018aca09c8",
+        "type": "change",
+        "z": "10e38d15.571223",
+        "name": "total shutdown",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "0",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 340,
+        "y": 760,
+        "wires": [
+            [
+                "4d27aa77.5ecc94",
+                "64502be.7a3ccd4",
+                "3ba0746e.aab84c"
+            ]
+        ]
+    },
+    {
+        "id": "15c8290e9a77315e",
+        "type": "ui_audio",
+        "z": "10e38d15.571223",
+        "name": "",
+        "group": "8344a6c2611f5694",
+        "voice": "Microsoft Sonia Online (Natural) - English (United Kingdom)",
+        "always": true,
+        "x": 840,
+        "y": 160,
+        "wires": []
+    },
+    {
+        "id": "1e0cd1734c0985e5",
+        "type": "ui_audio",
+        "z": "10e38d15.571223",
+        "name": "",
+        "group": "8344a6c2611f5694",
+        "voice": "Microsoft Sonia Online (Natural) - English (United Kingdom)",
+        "always": "",
+        "x": 600,
+        "y": 360,
+        "wires": []
+    },
+    {
+        "id": "5bc7aa3f48c04129",
+        "type": "mqtt in",
+        "z": "10e38d15.571223",
+        "name": "",
+        "topic": "wifi",
+        "qos": "0",
+        "datatype": "auto",
+        "broker": "76d2bac1.91bed4",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 1110,
+        "y": 700,
+        "wires": [
+            [
+                "45b246af2db0619a"
+            ]
+        ]
+    },
+    {
+        "id": "31503b4ca4311f8c",
+        "type": "ui_text",
+        "z": "10e38d15.571223",
+        "group": "fa3612fe7ed57e1e",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "name": "",
+        "label": "wifi connection status",
+        "format": "{{msg.payload}}",
+        "layout": "col-center",
+        "className": "",
+        "x": 1860,
+        "y": 780,
+        "wires": []
+    },
+    {
+        "id": "dc15d407abda076c",
+        "type": "function",
+        "z": "10e38d15.571223",
+        "name": "",
+        "func": "if(global.get(\"now\") - global.get(\"lastMsg\") === 0) {\n    msg.payload = 0;\n}\nelse msg.payload = 1;\nglobal.set(\"lastMsg\", global.get(\"now\"));\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1320,
+        "y": 760,
+        "wires": [
+            [
+                "d93dc5e807a7a280"
+            ]
+        ]
+    },
+    {
+        "id": "45c7194d5d91fe6d",
+        "type": "function",
+        "z": "10e38d15.571223",
+        "name": "",
+        "func": "global.set(\"now\", msg.payload);\nmsg.payload = global.get(\"now\");\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1400,
+        "y": 700,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "3a9f8e4505ba40fe",
+        "type": "inject",
+        "z": "10e38d15.571223",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "3",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 1150,
+        "y": 760,
+        "wires": [
+            [
+                "dc15d407abda076c"
+            ]
+        ]
+    },
+    {
+        "id": "45b246af2db0619a",
+        "type": "change",
+        "z": "10e38d15.571223",
+        "name": "now",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "",
+                "tot": "date"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 1250,
+        "y": 700,
+        "wires": [
+            [
+                "45c7194d5d91fe6d"
+            ]
+        ]
+    },
+    {
+        "id": "d93dc5e807a7a280",
+        "type": "switch",
+        "z": "10e38d15.571223",
+        "name": "",
+        "property": "payload",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "1",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "0",
+                "vt": "str"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 2,
+        "x": 1470,
+        "y": 760,
+        "wires": [
+            [
+                "3c7b1535f9d593f7"
+            ],
+            [
+                "f0ec617ccd586913"
+            ]
+        ]
+    },
+    {
+        "id": "3c7b1535f9d593f7",
+        "type": "change",
+        "z": "10e38d15.571223",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "wifi connected",
+                "tot": "str"
+            },
+            {
+                "t": "set",
+                "p": "topic",
+                "pt": "msg",
+                "to": "wifi connection",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 1640,
+        "y": 740,
+        "wires": [
+            [
+                "31503b4ca4311f8c"
+            ]
+        ]
+    },
+    {
+        "id": "f0ec617ccd586913",
+        "type": "change",
+        "z": "10e38d15.571223",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "wifi disconnected",
+                "tot": "str"
+            },
+            {
+                "t": "set",
+                "p": "topic",
+                "pt": "msg",
+                "to": "wifi connection",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 1640,
+        "y": 780,
+        "wires": [
+            [
+                "31503b4ca4311f8c"
+            ]
+        ]
+    },
+    {
+        "id": "640dd1a9412bc52f",
+        "type": "inject",
+        "z": "10e38d15.571223",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": true,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "0",
+        "payloadType": "str",
+        "x": 1130,
+        "y": 860,
+        "wires": [
+            [
+                "4d10c8c1a0a8de1e"
+            ]
+        ]
+    },
+    {
+        "id": "4d10c8c1a0a8de1e",
+        "type": "function",
+        "z": "10e38d15.571223",
+        "name": "",
+        "func": "global.set(\"lastMsg\", 0)\nglobal.set(\"now\", 0)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1280,
+        "y": 860,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "619e40f76d04d0b6",
+        "type": "comment",
+        "z": "10e38d15.571223",
+        "name": "Init wifi_watchDog",
+        "info": "",
+        "x": 1150,
+        "y": 820,
+        "wires": []
+    },
+    {
+        "id": "a8dafbd97a053242",
+        "type": "link out",
+        "z": "10e38d15.571223",
+        "name": "link1",
+        "mode": "link",
+        "links": [
+            "9374f7a5fb7769e2"
+        ],
+        "x": 795,
+        "y": 240,
+        "wires": []
+    },
+    {
+        "id": "9374f7a5fb7769e2",
+        "type": "link in",
+        "z": "10e38d15.571223",
+        "name": "",
+        "links": [
+            "a8dafbd97a053242"
+        ],
+        "x": 35,
+        "y": 360,
+        "wires": [
+            [
+                "73f684e586f51f29"
+            ]
+        ]
+    },
+    {
+        "id": "d78f65382454b4af",
+        "type": "ui_spacer",
+        "z": "10e38d15.571223",
+        "name": "spacer",
+        "group": "aefc6f04.70404",
+        "order": 18,
+        "width": 2,
+        "height": 1
+    },
+    {
+        "id": "da0770f13fd30aa0",
+        "type": "ui_spacer",
+        "z": "10e38d15.571223",
+        "name": "spacer",
+        "group": "aefc6f04.70404",
+        "order": 19,
+        "width": 2,
+        "height": 1
+    },
+    {
+        "id": "76d2bac1.91bed4",
+        "type": "mqtt-broker",
+        "name": "locahost",
+        "broker": "localhost",
+        "port": "1883",
+        "clientid": "node1",
+        "autoConnect": true,
+        "usetls": false,
+        "protocolVersion": 4,
+        "keepalive": "60",
+        "cleansession": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthPayload": "",
+        "closeTopic": "",
+        "closeQos": "0",
+        "closePayload": "",
+        "willTopic": "",
+        "willQos": "0",
+        "willPayload": ""
+    },
+    {
+        "id": "21db450c.66332a",
+        "type": "ui_group",
+        "name": "Temperature",
+        "tab": "ef1b0cc8.9b5e8",
+        "order": 1,
+        "disp": true,
+        "width": 6,
+        "collapse": false
+    },
+    {
+        "id": "48330498.8d0d8c",
+        "type": "ui_group",
+        "name": "Humidity",
+        "tab": "ef1b0cc8.9b5e8",
+        "order": 2,
+        "disp": true,
+        "width": 6,
+        "collapse": false
+    },
+    {
+        "id": "afdfbe80.4e29f",
+        "type": "mqtt-broker",
+        "name": "locahost",
+        "broker": "localhost",
+        "port": "1883",
+        "clientid": "note1",
+        "usetls": false,
+        "compatmode": true,
+        "keepalive": "60",
+        "cleansession": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthPayload": "",
+        "closeTopic": "",
+        "closeQos": "0",
+        "closePayload": "",
+        "willTopic": "",
+        "willQos": "0",
+        "willPayload": ""
+    },
+    {
+        "id": "aefc6f04.70404",
+        "type": "ui_group",
+        "name": "Sony",
+        "tab": "349c4b96.96e754",
+        "order": 2,
+        "disp": true,
+        "width": "6",
+        "collapse": false
+    },
+    {
+        "id": "8a21836f.059d",
+        "type": "ui_group",
+        "name": "Channel",
+        "tab": "349c4b96.96e754",
+        "order": 1,
+        "disp": true,
+        "width": "6",
+        "collapse": false
+    },
+    {
+        "id": "4b297045.1792d",
+        "type": "ui_group",
+        "name": "LED controller",
+        "tab": "7fb52849.f59138",
+        "order": 1,
+        "disp": true,
+        "width": 6,
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "8344a6c2611f5694",
+        "type": "ui_group",
+        "name": "VirtualLock",
+        "tab": "92a3619fcdd15722",
+        "order": 2,
+        "disp": true,
+        "width": 6,
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "fa3612fe7ed57e1e",
+        "type": "ui_group",
+        "name": "WiFi",
+        "tab": "3bb72a986ef24bfc",
+        "order": 1,
+        "disp": true,
+        "width": 6,
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "ef1b0cc8.9b5e8",
+        "type": "ui_tab",
+        "name": "Monitoring",
+        "icon": "fa-thermometer-empty",
+        "order": 1,
+        "disabled": false,
+        "hidden": false
+    },
+    {
+        "id": "349c4b96.96e754",
+        "type": "ui_tab",
+        "name": "Control",
+        "icon": "games",
+        "order": 4
+    },
+    {
+        "id": "7fb52849.f59138",
+        "type": "ui_tab",
+        "name": "LED",
+        "icon": "lightbulb_outline",
+        "order": 2,
+        "disabled": false,
+        "hidden": false
+    },
+    {
+        "id": "92a3619fcdd15722",
+        "type": "ui_tab",
+        "name": "vLock",
+        "icon": "lock",
+        "order": 3,
+        "disabled": false,
+        "hidden": false
+    },
+    {
+        "id": "3bb72a986ef24bfc",
+        "type": "ui_tab",
+        "name": "ESP32",
+        "icon": "wifi",
+        "order": 5,
+        "disabled": false,
+        "hidden": false
+    }
+]
